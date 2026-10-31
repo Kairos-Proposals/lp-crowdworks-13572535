@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kairos ご提案 | Shopify構築・会員機能設定</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F8;
+    --navy:#17263E;
+    --navy-deep:#0F1C30;
+    --slate:#4C7495;
+    --coral:#FF6B4A;
+    --teal:#2A9D8F;
+    --ink:#1B1B1F;
+    --white:#FFFFFF;
+    --line:#D8DEE4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans JP',sans-serif;
+    line-height:1.85;
+    font-weight:400;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.en{
+    font-family:'Zen Kaku Gothic New','Space Grotesk',sans-serif;
+  }
+  .en{
+    font-family:'Space Grotesk',sans-serif;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .tag-label{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:6px 14px 6px 10px;
+    border:1px solid currentColor;
+    border-radius:999px;
+  }
+  .tag-label::before{
+    content:"";
+    width:7px;height:7px;
+    border-radius:50%;
+    background:currentColor;
+    display:inline-block;
+  }
+
+  /* ===== HERO ===== */
+  header.hero{
+    position:relative;
+    background:
+      radial-gradient(circle at 85% 10%, rgba(255,107,74,0.18), transparent 45%),
+      linear-gradient(150deg,var(--navy-deep),var(--navy) 60%, #1E3250);
+    color:var(--white);
+    padding:110px 0 140px;
+    overflow:hidden;
+  }
+  .barcode{
+    position:absolute;
+    top:40px;right:-40px;
+    width:220px;height:90px;
+    display:flex;
+    gap:3px;
+    opacity:.35;
+    transform:rotate(4deg);
+  }
+  .barcode span{
+    background:#fff;
+    display:block;
+  }
+  .barcode span:nth-child(odd){width:3px;}
+  .barcode span:nth-child(even){width:6px;}
+
+  .price-tag{
+    position:absolute;
+    width:150px;height:92px;
+    background:linear-gradient(135deg,#FF8A66,var(--coral));
+    border-radius:10px 24px 10px 10px;
+    box-shadow:0 20px 40px rgba(0,0,0,.25);
+  }
+  .price-tag::before{
+    content:"";
+    position:absolute;
+    width:16px;height:16px;
+    background:var(--navy-deep);
+    border-radius:50%;
+    top:14px;right:14px;
+    box-shadow:0 0 0 3px rgba(255,255,255,.4);
+  }
+  .price-tag.one{top:110px; right:60px; transform:rotate(-10deg);}
+  .price-tag.two{top:230px; right:-10px; transform:rotate(14deg); background:linear-gradient(135deg,#3CBAAA,var(--teal)); width:120px;height:76px;}
+  .price-tag.three{display:none;}
+
+  .hero-inner{
+    position:relative;
+    z-index:2;
+  }
+  .hero-inner .tag-label{color:#FFD9CC;border-color:#FFD9CC;margin-bottom:28px;}
+  .hero h1{
+    font-size:clamp(32px,5vw,54px);
+    font-weight:900;
+    line-height:1.5;
+    max-width:720px;
+    letter-spacing:.01em;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--coral);
+  }
+  .hero p.lead{
+    margin-top:26px;
+    max-width:560px;
+    font-size:16px;
+    color:#CBD6E2;
+  }
+  .hero .meta{
+    margin-top:48px;
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+  }
+  .hero .meta div{
+    border-left:2px solid rgba(255,255,255,.25);
+    padding-left:14px;
+  }
+  .hero .meta span{
+    display:block;
+    font-size:11px;
+    letter-spacing:.12em;
+    color:#9AAFC4;
+    font-family:'Space Grotesk',sans-serif;
+    text-transform:uppercase;
+  }
+  .hero .meta strong{
+    font-size:18px;
+    font-weight:700;
+  }
+
+  /* ===== SECTION COMMON ===== */
+  section{
+    padding:96px 0;
+    position:relative;
+  }
+  .sec-head{
+    margin-bottom:56px;
+  }
+  .sec-head .tag-label{
+    color:var(--teal);
+    border-color:var(--teal);
+    margin-bottom:18px;
+  }
+  .sec-head h2{
+    font-size:clamp(24px,3.4vw,36px);
+    font-weight:900;
+    color:var(--navy);
+    line-height:1.5;
+  }
+  .sec-head p{
+    margin-top:16px;
+    max-width:620px;
+    color:#52606D;
+    font-size:15px;
+  }
+
+  /* ===== UNDERSTANDING ===== */
+  .understand{
+    background:var(--white);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .u-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+  }
+  .u-card{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:30px 28px;
+  }
+  .u-card .num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:13px;
+    color:var(--coral);
+    font-weight:700;
+    letter-spacing:.1em;
+  }
+  .u-card h3{
+    margin-top:10px;
+    font-size:18px;
+    color:var(--navy);
+  }
+  .u-card p{
+    margin-top:10px;
+    font-size:14px;
+    color:#5A6672;
+  }
+  .u-note{
+    margin-top:48px;
+    background:linear-gradient(120deg,var(--navy),#22395A);
+    color:#fff;
+    border-radius:16px;
+    padding:34px 36px;
+    font-size:15px;
+    line-height:2;
+  }
+  .u-note strong{color:#FFC9B9;}
+
+  /* ===== VALUE CARDS ===== */
+  .value-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+  }
+  .v-card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:32px 26px;
+    position:relative;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .v-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(23,38,62,.12);
+  }
+  .v-icon{
+    width:48px;height:48px;
+    border-radius:12px;
+    margin-bottom:20px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .v-icon.shop{background:linear-gradient(135deg,var(--navy),var(--slate));}
+  .v-icon.member{background:linear-gradient(135deg,var(--teal),#54C7B8);}
+  .v-icon.jp{background:linear-gradient(135deg,var(--coral),#FF9A7A);}
+  .v-icon.speed{background:linear-gradient(135deg,#6C5CE7,#8E7CF0);}
+  .v-icon.long{background:linear-gradient(135deg,#2E3A4E,#51627D);}
+  .v-icon svg{width:22px;height:22px;}
+  .v-card h3{
+    font-size:17px;
+    color:var(--navy);
+    margin-bottom:10px;
+  }
+  .v-card p{
+    font-size:13.5px;
+    color:#5A6672;
+  }
+  .v-card.span2{grid-column:span 2;}
+
+  /* ===== SCHEDULE ===== */
+  .schedule{background:var(--white);border-top:1px solid var(--line);}
+  .steps{
+    position:relative;
+    padding-left:34px;
+  }
+  .steps::before{
+    content:"";
+    position:absolute;
+    left:9px;top:8px;bottom:8px;
+    width:2px;
+    background:repeating-linear-gradient(to bottom,var(--line) 0 6px, transparent 6px 12px);
+  }
+  .step{
+    position:relative;
+    padding-bottom:44px;
+  }
+  .step:last-child{padding-bottom:0;}
+  .step::before{
+    content:"";
+    position:absolute;
+    left:-34px;top:4px;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:var(--white);
+    border:3px solid var(--coral);
+  }
+  .step .s-tag{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    color:var(--coral);
+    letter-spacing:.1em;
+    font-weight:700;
+  }
+  .step h3{
+    font-size:18px;
+    color:var(--navy);
+    margin:6px 0 8px;
+  }
+  .step p{
+    font-size:14px;
+    color:#5A6672;
+    max-width:560px;
+  }
+
+  /* ===== CLOSING ===== */
+  .closing{
+    background:
+      radial-gradient(circle at 15% 20%, rgba(42,157,143,0.25), transparent 40%),
+      linear-gradient(150deg,var(--navy-deep),var(--navy));
+    color:#fff;
+    border-radius:0;
+    text-align:center;
+    padding:110px 0;
+  }
+  .closing .tag-label{color:#CFE8E3;border-color:#CFE8E3;margin-bottom:24px;}
+  .closing h2{
+    font-size:clamp(26px,4vw,40px);
+    font-weight:900;
+    max-width:700px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+  .closing p{
+    margin:22px auto 0;
+    max-width:520px;
+    color:#B9C7D6;
+    font-size:15px;
+  }
+  .price-box{
+    display:inline-block;
+    margin:40px auto 0;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:14px;
+    padding:20px 40px;
+  }
+  .price-box .label{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#9AAFC4;
+    font-family:'Space Grotesk',sans-serif;
+    text-transform:uppercase;
+  }
+  .price-box .amount{
+    font-size:30px;
+    font-weight:900;
+    margin-top:6px;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    color:#fff;
+  }
+  .price-box .amount small{
+    font-size:14px;
+    color:#9AAFC4;
+    font-weight:500;
+    margin-left:6px;
+  }
+  .cta-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-top:44px;
+    background:var(--coral);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    padding:18px 42px;
+    border-radius:999px;
+    box-shadow:0 18px 40px rgba(255,107,74,.35);
+    transition:transform .2s ease;
+  }
+  .cta-btn:hover{transform:translateY(-3px);}
+
+  footer{
+    background:var(--navy-deep);
+    color:#7C8EA3;
+    text-align:center;
+    padding:28px 0;
+    font-size:12px;
+    letter-spacing:.05em;
+  }
+
+  @media(max-width:860px){
+    .u-grid{grid-template-columns:1fr;}
+    .value-grid{grid-template-columns:1fr 1fr;}
+    .v-card.span2{grid-column:span 2;}
+    .hero{padding:90px 0 110px;}
+    .price-tag{display:none;}
+  }
+  @media(max-width:600px){
+    section{padding:72px 0;}
+    .value-grid{grid-template-columns:1fr;}
+    .v-card.span2{grid-column:span 1;}
+    .hero .meta{gap:24px;}
+    .price-box{padding:18px 26px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="barcode">
+    <span style="height:90px"></span><span style="height:60px"></span><span style="height:90px"></span>
+    <span style="height:40px"></span><span style="height:90px"></span><span style="height:70px"></span>
+    <span style="height:90px"></span><span style="height:50px"></span><span style="height:90px"></span>
+    <span style="height:30px"></span><span style="height:90px"></span><span style="height:65px"></span>
+    <span style="height:90px"></span><span style="height:45px"></span><span style="height:90px"></span>
+  </div>
+  <div class="price-tag one"></div>
+  <div class="price-tag two"></div>
+
+  <div class="wrap hero-inner">
+    <span class="tag-label">Kairos からのご提案</span>
+    <h1>棚に並べて終わりじゃない。<br>売れ続ける<em>仕組み</em>まで、Shopifyでつくります。</h1>
+    <p class="lead">
+      構築して終わりのサイトではなく、会員・決済・コレクションまで整えた「運用できるお店」を。
+      Shopify構築と会員機能設定、どちらも一人の担当者が一貫して対応します。
+    </p>
+    <div class="meta">
+      <div>
+        <span>Budget</span>
+        <strong>¥55,000〜 ご相談</strong>
+      </div>
+      <div>
+        <span>Platform</span>
+        <strong>Shopify / Appstle</strong>
+      </div>
+      <div>
+        <span>Relationship</span>
+        <strong>継続パートナー想定</strong>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="understand">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag-label">このご依頼への理解</span>
+      <h2>「まず1店舗目を、確実に。」<br>そんな想いを、構成の細部から感じました。</h2>
+      <p>単なるテンプレート設置ではなく、会員別の有料プラン・割引設定まで含めた「販売できる状態」への仕上げを求められているご依頼だと理解しています。</p>
+    </div>
+
+    <div class="u-grid">
+      <div class="u-card">
+        <div class="num">01</div>
+        <h3>構築範囲が広く、抜け漏れが命取りになる</h3>
+        <p>決済設定・コレクション・ポリシーページ・特商法表記まで、販売開始に必要な項目が多岐にわたります。一つでも漏れればECとして公開できません。</p>
+      </div>
+      <div class="u-card">
+        <div class="num">02</div>
+        <h3>Appstle Membershipsという、やや専門的な要件</h3>
+        <p>2種類の有料会員・月額課金・会員別割引という設定は、アプリの仕様を正確に理解していないと、設定ミスが収益に直結します。</p>
+      </div>
+      <div class="u-card">
+        <div class="num">03</div>
+        <h3>「今回だけ」ではなく、次も頼める相手を探している</h3>
+        <p>機密保持契約・打合せ対応・国内在住という条件は、単発の外注ではなく、長く任せられる担当者を求めているサインだと受け取りました。</p>
+      </div>
+      <div class="u-card">
+        <div class="num">04</div>
+        <h3>限られた予算の中で、過不足のない提案が必要</h3>
+        <p>無料テーマ活用・素材提供ありという前提を活かし、構築工数を必要な範囲に絞ることで、ご予算内での着地を目指せる案件だと考えています。</p>
+      </div>
+    </div>
+
+    <div class="u-note">
+      私たち Kairos は、Web制作とシステム開発の両方を担うチームです。<br>
+      <strong>「デザインを整える人」と「仕組みを組む人」が別々</strong>という体制ではなく、構築・設定・動作確認までを一気通貫でお任せいただけます。今回のご依頼のように「デザインは無料テーマでシンプルに、でも会員機能は正確に」というバランス感覚が求められる案件こそ、私たちの得意領域です。
+    </div>
+  </div>
+</section>
+
+<section class="value">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag-label">Kairos が提供できる価値</span>
+      <h2>「構築できる」だけでなく、<br>「運用まで見据えて組む」ことにこだわります。</h2>
+    </div>
+
+    <div class="value-grid">
+      <div class="v-card">
+        <div class="v-icon shop">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l1-5h16l1 5M3 9h18M3 9v10a1 1 0 001 1h16a1 1 0 001-1V9M9 13a3 3 0 006 0" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Shopify構築のフルセット対応</h3>
+        <p>無料テーマ選定から初期設定・決済連携・コレクション設計、ポリシーページや特商法表記まで、販売可能な状態まで一括で仕上げます。</p>
+      </div>
+
+      <div class="v-card">
+        <div class="v-icon member">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#fff" stroke-width="1.6"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <h3>会員機能・月額課金の正確な設定</h3>
+        <p>Appstle Membershipsの2プラン構成、会員別割引ロジックまで、仕様書を読み込んだ上で過不足なく設定します。</p>
+      </div>
+
+      <div class="v-card">
+        <div class="v-icon jp">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4.5L6 21l1.5-7.5L2 9h7z" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>国内在住・日本語での円滑なやり取り</h3>
+        <p>平日10時〜19時のオンライン打合せに対応。言語や時差の不安なく、認識齟齬のない進行をお約束します。</p>
+      </div>
+
+      <div class="v-card">
+        <div class="v-icon speed">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>常識の範囲内での柔軟な修正対応</h3>
+        <p>修正回数に上限を設けず、公開までの品質を一緒に詰めていきます。認識のズレは都度すり合わせます。</p>
+      </div>
+
+      <div class="v-card">
+        <div class="v-icon long">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1116 0 8 8 0 01-16 0z" stroke="#fff" stroke-width="1.5"/><path d="M12 8v4l3 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>機密保持・継続発注を前提とした体制</h3>
+        <p>NDA締結や実績非公開といったご要望にも対応可能。1案件目を基準に、次の案件も安心してお任せいただける関係を築きます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="schedule">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag-label">進め方・スケジュールイメージ</span>
+      <h2>ご提供いただく素材をもとに、<br>最短ルートで公開まで進めます。</h2>
+      <p>目安期間であり、必要に応じてご相談の上、前後します。</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="s-tag">STEP 01 ・ 1〜2日</span>
+        <h3>ヒアリング・要件すり合わせ</h3>
+        <p>オンライン打合せにて、会員プラン内容・割引条件・納期希望を確認し、テーマ候補をご提案します。</p>
+      </div>
+      <div class="step">
+        <span class="s-tag">STEP 02 ・ 3〜4日</span>
+        <h3>基本構築・初期設定</h3>
+        <p>無料テーマ適用、決済設定、コレクション構成、TOP・商品一覧／詳細ページの制作を進めます。</p>
+      </div>
+      <div class="step">
+        <span class="s-tag">STEP 03 ・ 2〜3日</span>
+        <h3>固定ページ・会員機能設定</h3>
+        <p>各ポリシー・特商法・会社概要などの固定ページ作成と、Appstle Membershipsの会員プラン・割引設定を行います。</p>
+      </div>
+      <div class="step">
+        <span class="s-tag">STEP 04 ・ 1〜2日</span>
+        <h3>商品登録・動作確認</h3>
+        <p>商品5点の登録、決済・会員登録フローのテストを実施し、問題がないか確認します。</p>
+      </div>
+      <div class="step">
+        <span class="s-tag">STEP 05</span>
+        <h3>最終確認・納品</h3>
+        <p>全体の見直し・ご要望の反映を行い、販売開始できる状態で納品します。継続案件のご相談もこの時点で承ります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <span class="tag-label">Next Action</span>
+    <h2>まずはオンラインで、15分だけお話ししませんか。</h2>
+    <p>ご提示の条件・金額感に沿って対応いたします。自己紹介と簡単な実績、お見積もり金額を添えてご連絡いたしますので、ぜひご検討ください。</p>
+
+    <div class="price-box">
+      <div class="label">Estimated Quote</div>
+      <div class="amount">¥55,000<small>〜（税別・ご相談可）</small></div>
+    </div>
+    <br>
+    <a href="#" class="cta-btn">
+      Kairos に相談してみる →
+    </a>
+  </div>
+</section>
+
+<footer>
+  Proposal by <span class="en">Kairos</span> — Web制作・システム開発チーム
+</footer>
+
+</body>
+</html>
